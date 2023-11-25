@@ -1,9 +1,11 @@
 package KNUChat.Record.application;
 
 import KNUChat.Record.dto.request.RecordCreateRequest;
+import KNUChat.Record.dto.response.RecordDetailResponse;
 import KNUChat.Record.entity.Hashtag;
 import KNUChat.Record.entity.Record;
 import KNUChat.Record.entity.Url;
+import KNUChat.Record.exception.NotFoundException;
 import KNUChat.Record.repository.HashtagRepository;
 import KNUChat.Record.repository.RecordRepository;
 import KNUChat.Record.repository.UrlRepository;
@@ -66,5 +68,13 @@ public class RecordService {
                 .toList();
 
         hashtagRepository.saveAll(hashtags);
+    }
+
+    public RecordDetailResponse getRecordDetailById(Long id) {
+        Record record = recordRepository.findById(id).orElseThrow(() -> new NotFoundException("Record"));
+        List<Url> urls = urlRepository.findAllByRecordId(record.getId());
+        List<Hashtag> hashtags = hashtagRepository.findAllByRecordId(record.getId());
+
+        return RecordDetailResponse.from(record, urls, hashtags);
     }
 }
