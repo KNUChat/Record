@@ -2,6 +2,7 @@ package KNUChat.Record.entity;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -21,4 +22,10 @@ public class Hashtag {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "record_id")
     private Record record;
+
+    @Builder
+    public Hashtag(String tag, Record record) {
+        this.tag = tag;
+        this.record = record;
+    }
 }

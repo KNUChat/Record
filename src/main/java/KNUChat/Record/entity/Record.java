@@ -2,6 +2,7 @@ package KNUChat.Record.entity;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -29,4 +30,13 @@ public class Record {
 
     @Column(name = "description")
     private String description;
+
+    @Builder
+    public Record(Long userId, String title, String achievement, String period, String description) {
+        this.userId = userId;
+        this.title = title;
+        this.achievement = achievement;
+        this.period = period;
+        this.description = description;
+    }
 }

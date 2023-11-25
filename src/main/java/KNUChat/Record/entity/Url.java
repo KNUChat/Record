@@ -2,6 +2,7 @@ package KNUChat.Record.entity;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -20,4 +21,10 @@ public class Url {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "record_id")
     private Record record;
+
+    @Builder
+    public Url(String link, Record record) {
+        this.link = link;
+        this.record = record;
+    }
 }
