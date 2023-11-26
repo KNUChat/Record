@@ -1,16 +1,22 @@
 package KNUChat.Record.application;
 
 import KNUChat.Record.dto.request.RecordCreateRequest;
+import KNUChat.Record.dto.response.RecordBatchResponse;
 import KNUChat.Record.dto.response.RecordDetailResponse;
+import KNUChat.Record.dto.response.RecordResponse;
 import KNUChat.Record.entity.Hashtag;
 import KNUChat.Record.entity.Record;
 import KNUChat.Record.entity.Url;
+import KNUChat.Record.exception.BadSearchException;
 import KNUChat.Record.exception.NotFoundException;
 import KNUChat.Record.repository.HashtagRepository;
 import KNUChat.Record.repository.RecordRepository;
 import KNUChat.Record.repository.UrlRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -69,6 +75,55 @@ public class RecordService {
                 .toList();
 
         hashtagRepository.saveAll(hashtags);
+    }
+
+    public RecordBatchResponse getPaging(String searchWord, String type, int page) {
+        Pageable pageable = PageRequest.of(page, 10);
+        if (type.equals("user"))
+            return RecordBatchResponse.of(getPagingByUserId(searchWord, pageable));
+        if (type.equals("hashtag"))
+            return RecordBatchResponse.of(getPagingByHashtag(searchWord, pageable));
+        if (type.equals("keyword"))
+            return RecordBatchResponse.of(getPagingByKeyword(searchWord, pageable));
+
+        throw new BadSearchException(type);
+    }
+
+    public List<RecordResponse> getPagingByUserId(String userId, Pageable pageable) {
+        Page<Record> recordPage = recordRepository.findByUserId(Long.parseLong(userId), pageable);
+
+        List<RecordResponse> recordResponses = recordPage.stream()
+                .map(record -> {
+                    return RecordResponse.from(record, hashtagRepository.findAllByRecordId(record.getId()));
+                })
+                .toList();
+
+        return recordResponses;
+    }
+
+    public List<RecordResponse> getPagingByHashtag(String tag, Pageable pageable) {
+        Page<Hashtag> hashtagPage = hashtagRepository.findByTag(tag, pageable);
+
+        List<RecordResponse> recordResponses = hashtagPage.stream()
+                .map(hashtag -> {
+                    Record record = hashtag.getRecord();
+                    return RecordResponse.from(record, hashtagRepository.findAllByRecordId(record.getId()));
+                })
+                .toList();
+
+        return recordResponses;
+    }
+
+    public List<RecordResponse> getPagingByKeyword(String keyword, Pageable pageable) {
+        Page<Record> recordPage = recordRepository.findByTitleContaining(keyword, pageable);
+
+        List<RecordResponse> recordResponses = recordPage.stream()
+                .map(record -> {
+                    return RecordResponse.from(record, hashtagRepository.findAllByRecordId(record.getId()));
+                })
+                .toList();
+
+        return recordResponses;
     }
 
     public RecordDetailResponse getRecordDetailById(Long id) {

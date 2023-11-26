@@ -31,4 +31,11 @@ public class KnuchatExceptionHandler {
                 .status(HttpStatus.NOT_FOUND)
                 .body(new ErrorResponse(HttpStatus.NOT_FOUND.value(), e.getMessage()));
     }
+
+    @ExceptionHandler(BadSearchException.class)
+    public ResponseEntity<ErrorResponse> badSearchExceptionHandler(BadSearchException e) {
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(new ErrorResponse(HttpStatus.BAD_REQUEST.value(), e.getMessage()));
+    }
 }

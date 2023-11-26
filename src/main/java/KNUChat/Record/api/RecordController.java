@@ -2,16 +2,16 @@ package KNUChat.Record.api;
 
 import KNUChat.Record.application.RecordService;
 import KNUChat.Record.dto.request.RecordCreateRequest;
-import KNUChat.Record.dto.request.RecordSearchRequest;
 import KNUChat.Record.dto.response.RecordBatchResponse;
 import KNUChat.Record.dto.response.RecordDetailResponse;
 import KNUChat.Record.dto.response.RecordIdResponse;
-import KNUChat.Record.entity.Record;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.awt.print.Pageable;
 
 @RestController
 @RequiredArgsConstructor
@@ -29,6 +29,13 @@ public class RecordController {
     @GetMapping("/record/{id}")
     public ResponseEntity<RecordDetailResponse> getRecord(@PathVariable Long id) {
         RecordDetailResponse response = recordService.getRecordDetailById(id);
+
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
+    @GetMapping("/record")
+    public ResponseEntity<RecordBatchResponse> searchRecord(@RequestParam("page") int page, @RequestParam("searchWord") String searchWord, @RequestParam("type") String type) {
+        RecordBatchResponse response = recordService.getPaging(searchWord, type, page);
 
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
