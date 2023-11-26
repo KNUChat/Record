@@ -2,8 +2,11 @@ package KNUChat.Record.api;
 
 import KNUChat.Record.application.RecordService;
 import KNUChat.Record.dto.request.RecordCreateRequest;
+import KNUChat.Record.dto.request.RecordSearchRequest;
+import KNUChat.Record.dto.response.RecordBatchResponse;
 import KNUChat.Record.dto.response.RecordDetailResponse;
 import KNUChat.Record.dto.response.RecordIdResponse;
+import KNUChat.Record.entity.Record;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -28,5 +31,12 @@ public class RecordController {
         RecordDetailResponse response = recordService.getRecordDetailById(id);
 
         return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
+    @DeleteMapping("/record/{id}")
+    public ResponseEntity<RecordIdResponse> deleteRecord(@PathVariable Long id) {
+        recordService.deleteRecordById(id);
+
+        return ResponseEntity.status(HttpStatus.OK).body(new RecordIdResponse(id));
     }
 }
