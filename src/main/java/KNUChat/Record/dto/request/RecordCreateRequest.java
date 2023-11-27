@@ -2,10 +2,14 @@ package KNUChat.Record.dto.request;
 
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.util.List;
 
 @Getter
+@Setter
+@NoArgsConstructor
 public class RecordCreateRequest {
     @NotNull(message = "사용자 ID는 필수 정보입니다.")
     private Long userId;
@@ -16,5 +20,4 @@ public class RecordCreateRequest {
     private String description;
     private List<String> urls;
     private List<String> hashtags;
-
 }
