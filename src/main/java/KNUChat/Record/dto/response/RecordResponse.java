@@ -12,6 +12,8 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class RecordResponse {
+    private Long recordId;
+    private Long userId;
     private String title;
     private String period;
     private String Description;
@@ -27,6 +29,8 @@ public class RecordResponse {
         else hashtagDtos = null;
 
         return new RecordResponse(
+                record.getId(),
+                record.getUserId(),
                 record.getTitle(),
                 record.getPeriod(),
                 description,
