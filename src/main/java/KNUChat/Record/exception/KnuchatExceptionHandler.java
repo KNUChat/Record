@@ -38,4 +38,11 @@ public class KnuchatExceptionHandler {
                 .status(HttpStatus.BAD_REQUEST)
                 .body(new ErrorResponse(HttpStatus.BAD_REQUEST.value(), e.getMessage()));
     }
+
+    @ExceptionHandler(KnuchatException.class)
+    public ResponseEntity<ErrorResponse> knuchatExceptionHandler(KnuchatException e) {
+        return ResponseEntity
+                .status(e.getHttpStatus())
+                .body(new ErrorResponse(e.getHttpStatus().value(), e.getMessage()));
+    }
 }
