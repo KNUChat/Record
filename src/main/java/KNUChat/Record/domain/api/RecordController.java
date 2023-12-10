@@ -1,10 +1,11 @@
-package KNUChat.Record.api;
+package KNUChat.Record.domain.api;
 
-import KNUChat.Record.application.RecordService;
-import KNUChat.Record.dto.request.RecordCreateRequest;
-import KNUChat.Record.dto.response.RecordBatchResponse;
-import KNUChat.Record.dto.response.RecordDetailResponse;
-import KNUChat.Record.dto.response.RecordIdResponse;
+import KNUChat.Record.domain.application.RecordService;
+import KNUChat.Record.domain.dto.request.RecordCreateRequest;
+import KNUChat.Record.domain.dto.request.RecordUpdateRequest;
+import KNUChat.Record.domain.dto.response.RecordDetailResponse;
+import KNUChat.Record.domain.dto.response.RecordBatchResponse;
+import KNUChat.Record.domain.dto.response.RecordIdResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -36,6 +37,13 @@ public class RecordController {
         RecordBatchResponse response = recordService.getPaging(searchWord, type, page);
 
         return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
+    @PatchMapping("/record")
+    public ResponseEntity<RecordIdResponse> updateRecord(@RequestBody @Valid RecordUpdateRequest request) {
+        recordService.updateRecord(request);
+
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @DeleteMapping("/record/{id}")

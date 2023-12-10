@@ -1,6 +1,6 @@
-package KNUChat.Record.repository;
+package KNUChat.Record.domain.repository;
 
-import KNUChat.Record.entity.Record;
+import KNUChat.Record.domain.entity.Record;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

@@ -1,17 +1,18 @@
-package KNUChat.Record.application;
+package KNUChat.Record.domain.application;
 
-import KNUChat.Record.dto.request.RecordCreateRequest;
-import KNUChat.Record.dto.response.RecordBatchResponse;
-import KNUChat.Record.dto.response.RecordDetailResponse;
-import KNUChat.Record.dto.response.RecordResponse;
-import KNUChat.Record.entity.Hashtag;
-import KNUChat.Record.entity.Record;
-import KNUChat.Record.entity.Url;
+import KNUChat.Record.domain.dto.request.RecordUpdateRequest;
+import KNUChat.Record.domain.dto.response.RecordDetailResponse;
+import KNUChat.Record.domain.dto.request.RecordCreateRequest;
+import KNUChat.Record.domain.dto.response.RecordBatchResponse;
+import KNUChat.Record.domain.dto.response.RecordResponse;
+import KNUChat.Record.domain.entity.Hashtag;
+import KNUChat.Record.domain.entity.Record;
+import KNUChat.Record.domain.entity.Url;
 import KNUChat.Record.exception.BadSearchException;
 import KNUChat.Record.exception.NotFoundException;
-import KNUChat.Record.repository.HashtagRepository;
-import KNUChat.Record.repository.RecordRepository;
-import KNUChat.Record.repository.UrlRepository;
+import KNUChat.Record.domain.repository.HashtagRepository;
+import KNUChat.Record.domain.repository.RecordRepository;
+import KNUChat.Record.domain.repository.UrlRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -132,6 +133,27 @@ public class RecordService {
         List<Hashtag> hashtags = hashtagRepository.findAllByRecordId(record.getId());
 
         return RecordDetailResponse.from(record, urls, hashtags);
+    }
+
+    @Transactional
+    public void updateRecord(RecordUpdateRequest request) {
+        Record record = recordRepository.findById(request.getId()).orElseThrow(() -> new NotFoundException("Record"));
+        record.update(request);
+
+        updateHashtags(request.getHashtags(), record);
+        updateUrls(request.getUrls(), record);
+    }
+
+    private void updateHashtags(List<String> hashtagDtos, Record record) {
+        hashtagRepository.deleteAllByRecordId(record.getId());
+        if (hashtagDtos == null) return;
+        buildAllHashtagFrom(hashtagDtos, record);
+    }
+
+    private void updateUrls(List<String> urlDtos, Record record) {
+        urlRepository.deleteAllByRecordId(record.getId());
+        if (urlDtos == null) return;
+        buildAllUrlFrom(urlDtos, record);
     }
 
     @Transactional

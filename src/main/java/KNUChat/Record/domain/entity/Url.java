@@ -1,4 +1,4 @@
-package KNUChat.Record.entity;
+package KNUChat.Record.domain.entity;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -8,24 +8,23 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @Entity
-@Table(name = "hashtag")
+@Table(name = "url")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Hashtag {
-
+public class Url {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "tag")
-    private String tag;
+    @Column(name = "link")
+    private String link;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "record_id")
     private Record record;
 
     @Builder
-    public Hashtag(String tag, Record record) {
-        this.tag = tag;
+    public Url(String link, Record record) {
+        this.link = link;
         this.record = record;
     }
 }

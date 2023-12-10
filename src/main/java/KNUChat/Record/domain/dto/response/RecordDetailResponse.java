@@ -1,8 +1,8 @@
-package KNUChat.Record.dto.response;
+package KNUChat.Record.domain.dto.response;
 
-import KNUChat.Record.entity.Hashtag;
-import KNUChat.Record.entity.Record;
-import KNUChat.Record.entity.Url;
+import KNUChat.Record.domain.entity.Hashtag;
+import KNUChat.Record.domain.entity.Record;
+import KNUChat.Record.domain.entity.Url;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 

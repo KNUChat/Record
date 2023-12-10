@@ -1,6 +1,6 @@
-package KNUChat.Record.repository;
+package KNUChat.Record.domain.repository;
 
-import KNUChat.Record.entity.Url;
+import KNUChat.Record.domain.entity.Url;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

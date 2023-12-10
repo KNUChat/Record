@@ -1,4 +1,4 @@
-package KNUChat.Record.dto.request;
+package KNUChat.Record.domain.dto.request;
 
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;

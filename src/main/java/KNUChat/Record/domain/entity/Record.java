@@ -1,5 +1,6 @@
-package KNUChat.Record.entity;
+package KNUChat.Record.domain.entity;
 
+import KNUChat.Record.domain.dto.request.RecordUpdateRequest;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -38,5 +39,13 @@ public class Record {
         this.achievement = achievement;
         this.period = period;
         this.description = description;
+    }
+    public Record update(RecordUpdateRequest request) {
+        if (request.getTitle() != null) this.title = request.getTitle();
+        if (request.getAchievement() != null) this.achievement = request.getAchievement();
+        if (request.getPeriod() != null) this.period = request.getPeriod();
+        if (request.getDescription() != null) this.description = request.getDescription();
+
+        return this;
     }
 }

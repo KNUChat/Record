@@ -1,6 +1,6 @@
-package KNUChat.Record.application;
+package KNUChat.Record.domain.application;
 
-import KNUChat.Record.dto.request.RecordCreateRequest;
+import KNUChat.Record.domain.dto.request.RecordCreateRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;

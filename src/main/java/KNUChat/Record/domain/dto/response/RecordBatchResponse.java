@@ -1,4 +1,4 @@
-package KNUChat.Record.dto.response;
+package KNUChat.Record.domain.dto.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
