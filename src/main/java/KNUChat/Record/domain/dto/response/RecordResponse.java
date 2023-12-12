@@ -17,6 +17,7 @@ public class RecordResponse {
     private String title;
     private String period;
     private String Description;
+    private boolean hiding;
     private List<String> hashtags;
 
     public static RecordResponse from(Record record, List<Hashtag> hashtags) {
@@ -34,6 +35,7 @@ public class RecordResponse {
                 record.getTitle(),
                 record.getPeriod(),
                 description,
+                record.isHiding(),
                 hashtagDtos
         );
     }

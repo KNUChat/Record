@@ -49,6 +49,7 @@ public class RecordService {
                 .achievement(request.getAchievement())
                 .period(request.getPeriod())
                 .description(request.getDescription())
+                .hiding(request.isHiding())
                 .build();
 
         recordRepository.save(record);
@@ -78,53 +79,45 @@ public class RecordService {
         hashtagRepository.saveAll(hashtags);
     }
 
-    public RecordBatchResponse getRecordBatch(String searchWord, String type, int page) {
+    public RecordBatchResponse getRecordBatch(String searchWord, String type, int page, boolean isMine) {
         Pageable pageable = PageRequest.of(page, 10);
+        Page<Record> resultPage = switch (type) {
+            case "user" -> getPagingByUserId(searchWord, pageable, isMine);
+            case "hashtag" -> getPagingByHashtag(searchWord, pageable);
+            case "keyword" -> getPagingByKeyword(searchWord, pageable);
+            default -> throw new BadSearchException(type);
+        };
 
-        if (type.equals("user"))
-            return getPagingByUserId(searchWord, pageable);
-        else if (type.equals("hashtag"))
-            return getPagingByHashtag(searchWord, pageable);
-        else if (type.equals("keyword"))
-            return getPagingByKeyword(searchWord, pageable);
+        int totalPages = resultPage.getTotalPages();
+        List<RecordResponse> recordResponses = resultPage.stream()
+                .map(record -> RecordResponse.from(record, hashtagRepository.findAllByRecordId(record.getId())))
+                .toList();
+
+        return RecordBatchResponse.of(recordResponses, totalPages);
+    }
+
+    public Page<Record> getPagingByUserId(String userId, Pageable pageable, boolean isMine) {
+        Page<Record> resultPage;
+        if (isMine)
+            resultPage = recordRepository.findByUserId(Long.parseLong(userId), pageable);
         else
-            throw new BadSearchException(type);
+            resultPage = recordRepository.findByHidingIsFalseAndUserId(Long.parseLong(userId), pageable);
+
+        return resultPage;
     }
 
-    public RecordBatchResponse getPagingByUserId(String userId, Pageable pageable) {
-        Page<Record> recordPage = recordRepository.findByUserId(Long.parseLong(userId), pageable);
-        int totalPages = recordPage.getTotalPages();
+    public Page<Record> getPagingByHashtag(String tag, Pageable pageable) {
+        Page<Record> resultPage;
+        resultPage = hashtagRepository.findRecordByHidingIsFalseAndTag(tag, pageable);
 
-        List<RecordResponse> recordResponses = recordPage.stream()
-                .map(record -> RecordResponse.from(record, hashtagRepository.findAllByRecordId(record.getId())))
-                .toList();
-
-        return RecordBatchResponse.of(recordResponses, totalPages);
+        return resultPage;
     }
 
-    public RecordBatchResponse getPagingByHashtag(String tag, Pageable pageable) {
-        Page<Hashtag> hashtagPage = hashtagRepository.findByTag(tag, pageable);
-        int totalPages = hashtagPage.getTotalPages();
+    public Page<Record> getPagingByKeyword(String keyword, Pageable pageable) {
+        Page<Record> resultPage;
+        resultPage = recordRepository.findByHidingIsFalseAndTitleContaining(keyword, pageable);
 
-        List<RecordResponse> recordResponses = hashtagPage.stream()
-                .map(hashtag -> {
-                    Record record = hashtag.getRecord();
-                    return RecordResponse.from(record, hashtagRepository.findAllByRecordId(record.getId()));
-                })
-                .toList();
-
-        return RecordBatchResponse.of(recordResponses, totalPages);
-    }
-
-    public RecordBatchResponse getPagingByKeyword(String keyword, Pageable pageable) {
-        Page<Record> recordPage = recordRepository.findByTitleContaining(keyword, pageable);
-        int totalPages = recordPage.getTotalPages();
-
-        List<RecordResponse> recordResponses = recordPage.stream()
-                .map(record -> RecordResponse.from(record, hashtagRepository.findAllByRecordId(record.getId())))
-                .toList();
-
-        return RecordBatchResponse.of(recordResponses, totalPages);
+        return resultPage;
     }
 
     public RecordDetailResponse getRecordDetailById(Long id) {

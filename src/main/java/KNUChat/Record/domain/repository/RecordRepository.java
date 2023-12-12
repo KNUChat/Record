@@ -11,5 +11,7 @@ import org.springframework.stereotype.Repository;
 public interface RecordRepository extends JpaRepository<Record, Long> {
     Page<Record> findByUserId(Long userId, Pageable pageable);
 
-    Page<Record> findByTitleContaining(String keyword, Pageable pageable);
+    Page<Record> findByHidingIsFalseAndUserId(Long userId, Pageable pageable);
+
+    Page<Record> findByHidingIsFalseAndTitleContaining(String keyword, Pageable pageable);
 }

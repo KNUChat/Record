@@ -13,6 +13,8 @@ public class RecordUpdateRequest {
     private String achievement;
     private String period;
     private String description;
+    @NotNull(message = "공개 여부는 필수 정보입니다.")
+    private boolean hiding;
     private List<String> urls;
     private List<String> hashtags;
 }

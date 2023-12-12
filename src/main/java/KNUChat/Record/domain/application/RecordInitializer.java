@@ -31,6 +31,7 @@ public class RecordInitializer implements ApplicationRunner {
                 request.setAchievement("test achieve" + Integer.toString(id));
                 request.setPeriod("2020.01.01-2020.01.01");
                 request.setDescription("test description for pagination");
+                request.setHiding(j == 3);
 
                 List<String> hashtags = new ArrayList<>();
                 List<String> urls = new ArrayList<>();
@@ -68,6 +69,7 @@ public class RecordInitializer implements ApplicationRunner {
                 request.setAchievement("test achieve" + n);
                 request.setPeriod("2020.01.01-2020.01.01");
                 request.setDescription("01234567891123456789212345678931234567894123456789512345678961234567897123456789812345678991234567890123456789");
+                request.setHiding(j == 3);
 
                 List<String> hashtags = new ArrayList<>();
                 List<String> urls = new ArrayList<>();

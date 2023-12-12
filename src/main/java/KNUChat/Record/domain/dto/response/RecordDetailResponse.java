@@ -16,6 +16,7 @@ public class RecordDetailResponse {
     private final String achievement;
     private final String period;
     private final String description;
+    private final boolean hiding;
     private final List<String> urls;
     private final List<String> hashtags;
 
@@ -35,6 +36,7 @@ public class RecordDetailResponse {
                 record.getAchievement(),
                 record.getPeriod(),
                 record.getDescription(),
+                record.isHiding(),
                 urlDtos,
                 hashtagDtos
         );

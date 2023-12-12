@@ -32,19 +32,25 @@ public class Record {
     @Column(name = "description")
     private String description;
 
+    @Column(name = "hiding")
+    private boolean hiding;
+
     @Builder
-    public Record(Long userId, String title, String achievement, String period, String description) {
+    public Record(Long userId, String title, String achievement, String period, String description, boolean hiding) {
         this.userId = userId;
         this.title = title;
         this.achievement = achievement;
         this.period = period;
         this.description = description;
+        this.hiding = hiding;
     }
+
     public Record update(RecordUpdateRequest request) {
         if (request.getTitle() != null) this.title = request.getTitle();
         if (request.getAchievement() != null) this.achievement = request.getAchievement();
         if (request.getPeriod() != null) this.period = request.getPeriod();
         if (request.getDescription() != null) this.description = request.getDescription();
+        this.hiding = request.isHiding();
 
         return this;
     }
