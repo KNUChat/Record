@@ -34,7 +34,7 @@ public class RecordController {
 
     @GetMapping("/record")
     public ResponseEntity<RecordBatchResponse> searchRecord(@RequestParam("page") int page, @RequestParam("searchWord") String searchWord, @RequestParam("type") String type) {
-        RecordBatchResponse response = recordService.getPaging(searchWord, type, page);
+        RecordBatchResponse response = recordService.getRecordBatch(searchWord, type, page);
 
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }

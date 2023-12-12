@@ -9,8 +9,9 @@ import java.util.List;
 @AllArgsConstructor
 public class RecordBatchResponse {
     private List<RecordResponse> recordResponses;
+    private int totalPages;
 
-    public static RecordBatchResponse of(List<RecordResponse> recordResponses) {
-        return new RecordBatchResponse(recordResponses);
+    public static RecordBatchResponse of(List<RecordResponse> recordResponses, int totalPages) {
+        return new RecordBatchResponse(recordResponses, totalPages);
     }
 }

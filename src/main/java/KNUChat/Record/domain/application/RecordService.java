@@ -78,32 +78,33 @@ public class RecordService {
         hashtagRepository.saveAll(hashtags);
     }
 
-    public RecordBatchResponse getPaging(String searchWord, String type, int page) {
+    public RecordBatchResponse getRecordBatch(String searchWord, String type, int page) {
         Pageable pageable = PageRequest.of(page, 10);
-        if (type.equals("user"))
-            return RecordBatchResponse.of(getPagingByUserId(searchWord, pageable));
-        if (type.equals("hashtag"))
-            return RecordBatchResponse.of(getPagingByHashtag(searchWord, pageable));
-        if (type.equals("keyword"))
-            return RecordBatchResponse.of(getPagingByKeyword(searchWord, pageable));
 
-        throw new BadSearchException(type);
+        if (type.equals("user"))
+            return getPagingByUserId(searchWord, pageable);
+        else if (type.equals("hashtag"))
+            return getPagingByHashtag(searchWord, pageable);
+        else if (type.equals("keyword"))
+            return getPagingByKeyword(searchWord, pageable);
+        else
+            throw new BadSearchException(type);
     }
 
-    public List<RecordResponse> getPagingByUserId(String userId, Pageable pageable) {
+    public RecordBatchResponse getPagingByUserId(String userId, Pageable pageable) {
         Page<Record> recordPage = recordRepository.findByUserId(Long.parseLong(userId), pageable);
+        int totalPages = recordPage.getTotalPages();
 
         List<RecordResponse> recordResponses = recordPage.stream()
-                .map(record -> {
-                    return RecordResponse.from(record, hashtagRepository.findAllByRecordId(record.getId()));
-                })
+                .map(record -> RecordResponse.from(record, hashtagRepository.findAllByRecordId(record.getId())))
                 .toList();
 
-        return recordResponses;
+        return RecordBatchResponse.of(recordResponses, totalPages);
     }
 
-    public List<RecordResponse> getPagingByHashtag(String tag, Pageable pageable) {
+    public RecordBatchResponse getPagingByHashtag(String tag, Pageable pageable) {
         Page<Hashtag> hashtagPage = hashtagRepository.findByTag(tag, pageable);
+        int totalPages = hashtagPage.getTotalPages();
 
         List<RecordResponse> recordResponses = hashtagPage.stream()
                 .map(hashtag -> {
@@ -112,19 +113,18 @@ public class RecordService {
                 })
                 .toList();
 
-        return recordResponses;
+        return RecordBatchResponse.of(recordResponses, totalPages);
     }
 
-    public List<RecordResponse> getPagingByKeyword(String keyword, Pageable pageable) {
+    public RecordBatchResponse getPagingByKeyword(String keyword, Pageable pageable) {
         Page<Record> recordPage = recordRepository.findByTitleContaining(keyword, pageable);
+        int totalPages = recordPage.getTotalPages();
 
         List<RecordResponse> recordResponses = recordPage.stream()
-                .map(record -> {
-                    return RecordResponse.from(record, hashtagRepository.findAllByRecordId(record.getId()));
-                })
+                .map(record -> RecordResponse.from(record, hashtagRepository.findAllByRecordId(record.getId())))
                 .toList();
 
-        return recordResponses;
+        return RecordBatchResponse.of(recordResponses, totalPages);
     }
 
     public RecordDetailResponse getRecordDetailById(Long id) {
